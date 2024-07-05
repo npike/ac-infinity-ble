@@ -14,6 +14,8 @@ class DeviceInfo:
     vpd_state: int | None = None
     choose_port: int | None = None
     tmp: float | None = None
+    tmp_trigger_low: int | None = None
+    tmp_trigger_high: int | None = None
     hum: float | None = None
     vpd: float | None = None
     fan_type: int | None = None

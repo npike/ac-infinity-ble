@@ -106,6 +106,16 @@ class ACInfinityController:
         return self._state.fan or 0
 
     @property
+    def temperature_trigger_low(self) -> int:
+        """Get the low temperature that triggers the fan to turn on."""
+        return self._state.tmp_trigger_low or 0
+
+    @property
+    def temperature_trigger_high(self) -> int:
+        """Get the high temperature that triggers the fan to turn on."""
+        return self._state.tmp_trigger_high or 0
+
+    @property
     def temperature(self) -> float:
         """Get the temperature of the device."""
         return self._state.tmp or 0
@@ -143,12 +153,20 @@ class ACInfinityController:
     async def update(self) -> None:
         """Update the controller."""
         await self._ensure_connected()
-        _LOGGER.debug("%s: Updating", self.name)
+        _LOGGER.debug("%s: Updating %s", self.name)
         command = self._protocol.get_model_data(self._state.type, 0, self.sequence)
         if data := await self._send_command(command):
-            self._state.work_type = data[12]
-            self._state.level_off = data[15]
-            self._state.level_on = data[18]
+            if len(data) > 12:
+                self._state.work_type = data[12]
+            if len(data) > 15:
+                self._state.level_off = data[15]
+            if len(data) > 18:
+                self._state.level_on = data[18]
+            if len(data) > 22:
+                self._state.tmp_trigger_high = data[22]
+            if len(data) > 25:
+                self._state.tmp_trigger_low = data[25]
+
             if self._state.work_type == 1:
                 self._state.fan = self._state.level_off
             if self._state.work_type == 2:
