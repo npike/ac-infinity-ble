@@ -156,6 +156,7 @@ class ACInfinityController:
         _LOGGER.debug("%s: Updating %s", self.name)
         command = self._protocol.get_model_data(self._state.type, 0, self.sequence)
         if data := await self._send_command(command):
+            print(f"{self.name}: updating with (len {len(data)}) {data}")
             if len(data) > 12:
                 self._state.work_type = data[12]
             if len(data) > 15:
