@@ -100,8 +100,10 @@ class Protocol:
     def set_level(
         self, type: int, work_type: int, level: int, b: int, sequence: int
     ) -> bytes:
-        if work_type not in [1, 2]:
-            raise ValueError("Work type must be 1 (off) or 2 (on)")
+        if work_type not in [1, 2, 3, 4, 6]:
+            raise ValueError(
+                "Work type must be 1 (off), 2 (on), 3 (auto), 4 (timer), or 6 (cycle)"
+            )
         if level not in range(0, 11):
             raise ValueError("Level must be between 0 and 10")
 

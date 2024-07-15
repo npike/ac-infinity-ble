@@ -221,6 +221,18 @@ class ACInfinityController:
         await self._send_command(command)
         await self._execute_disconnect()
 
+    async def set_type(self, type: int) -> None:
+        """Set the work type of the controller."""
+        await self._ensure_connected()
+        _LOGGER.debug("%s: Set type to %s", self.name, type)
+        self._state.work_type = type
+
+        command = self._protocol.set_level(
+            self._state.type, self._state.work_type, self._state.fan, 0, self.sequence
+        )
+        await self._send_command(command)
+        await self._execute_disconnect()
+
     async def stop(self) -> None:
         """Stop the controller."""
         _LOGGER.debug("%s: Stop", self.name)
